@@ -1,6 +1,8 @@
 package com.hans.topics.controller;
 
 import com.hans.topics.dto.*;
+import com.hans.topics.entity.TopicLike;
+import com.hans.topics.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -42,4 +44,12 @@ public class TopicController {
         return WebResponse.<List<TopicResponse>>builder().data(allTopicResult).build();
     }
 
+    @PostMapping(
+            path = "/api/v1/topics/{topicId}/likes",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<Boolean> likeTopic(@RequestBody TopicLikeRequest topicLikeRequest, @PathVariable Integer topicId, UserResponse userResponse){
+        boolean topicLike = topicService.likeTopic(topicId,userResponse, topicLikeRequest);
+        return WebResponse.<Boolean>builder().data(topicLike).build();
+    }
 }

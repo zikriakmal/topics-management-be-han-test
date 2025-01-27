@@ -15,6 +15,18 @@ CREATE TABLE IF NOT EXISTS topics
     description       VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_user_posts FOREIGN KEY (user_id) REFERENCES users (id)
+    CONSTRAINT fk_user_topics FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS topic_likes
+(
+    id         SERIAL PRIMARY KEY,
+    user_id    INT NOT NULL,
+    topic_id   INT NOT NULL,
+    like_type  SMALLINT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_topics_topic_likes FOREIGN KEY (topic_id) REFERENCES topics (id),
+    CONSTRAINT fk_user_topic_likes FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
