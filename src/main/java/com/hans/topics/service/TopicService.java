@@ -3,10 +3,12 @@ package com.hans.topics.service;
 import com.hans.topics.dto.*;
 import com.hans.topics.entity.Topic;
 import com.hans.topics.entity.TopicLike;
+import com.hans.topics.entity.TopicWithLikeDislikeCount;
 import com.hans.topics.entity.User;
 import com.hans.topics.repository.TopicLikeRepository;
 import com.hans.topics.repository.TopicRepository;
 import com.hans.topics.repository.UserRepository;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -55,11 +57,11 @@ public class TopicService {
         return convertToTopicResponse(topicResult);
     }
 
-    public List<TopicResponse> getAllTopic() {
-        List<Topic> allUserPost = topicRepository.findAllByOrderByIdDesc();
+    public List<TopicResponseWithLikeDislike> getAllTopic() {
+        List<TopicWithLikeDislikeCount> allTopicLikeDislike = topicRepository.findAllTopicsWithLikeAndDislikeCounts();
 
-        return allUserPost.stream()
-                .map(this::convertToTopicResponse)
+        return allTopicLikeDislike.stream()
+                .map(this::convertToTopicResponseWithLikeDislike)
                 .collect(Collectors.toList());
     }
 
@@ -93,14 +95,6 @@ public class TopicService {
         return true;
     }
 
-
-    public List<TopicResponse> getMyTopics(UserResponse userResponse) {
-        List<Topic> allUserTopic = topicRepository.findAllByUserId(userResponse.getId());
-        return allUserTopic.stream()
-                .map(this::convertToTopicResponse)
-                .collect(Collectors.toList());
-    }
-
     private TopicResponse convertToTopicResponse(Topic topic) {
         return TopicResponse.builder()
                 .id(topic.getId())
@@ -113,6 +107,24 @@ public class TopicService {
                         .id(topic.getUser().getId())
                         .name(topic.getUser().getName())
                         .username(topic.getUser().getUsername())
+                        .build())
+                .build();
+    }
+
+    private TopicResponseWithLikeDislike convertToTopicResponseWithLikeDislike(TopicWithLikeDislikeCount topic) {
+        return TopicResponseWithLikeDislike.builder()
+                .id(topic.getTopic().getId())
+                .title(topic.getTopic().getTitle())
+                .description(topic.getTopic().getDescription())
+                .createdAt(topic.getTopic().getCreatedAt())
+                .updatedAt(topic.getTopic().getUpdatedAt())
+                .FormattedUpdatedAtDifference(topic.getTopic().getFormattedUpdatedAtDifference())
+                .like(topic.getLikeCount())
+                .dislike(topic.getDislikeCount())
+                .user(UserResponse.builder()
+                        .id(topic.getTopic().getUser().getId())
+                        .name(topic.getTopic().getUser().getName())
+                        .username(topic.getTopic().getUser().getUsername())
                         .build())
                 .build();
     }

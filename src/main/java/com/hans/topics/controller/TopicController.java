@@ -39,9 +39,9 @@ public class TopicController {
             path = "api/v1/topics",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<List<TopicResponse>> getAllPost(UserResponse userResponse){
-        List<TopicResponse> allTopicResult = topicService.getAllTopic();
-        return WebResponse.<List<TopicResponse>>builder().data(allTopicResult).build();
+    public WebResponse<List<TopicResponseWithLikeDislike>> getAllPost(UserResponse userResponse){
+        List<TopicResponseWithLikeDislike> allTopicResult = topicService.getAllTopic();
+        return WebResponse.<List<TopicResponseWithLikeDislike>>builder().data(allTopicResult).build();
     }
 
     @PostMapping(
