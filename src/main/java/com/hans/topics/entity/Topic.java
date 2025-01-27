@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -62,5 +63,8 @@ public class Topic {
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
+    @OneToMany
+    @JoinColumn(name = "topic_id", referencedColumnName = "id")
+    private List<TopicLike> topicLikes;
 
 }
